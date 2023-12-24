@@ -69,6 +69,7 @@ namespace Restoranv0
                         {
                             masa_garson = Program.garsonArray[i];
                             masa_garson.garson_musait_mi = false;
+                            masa_garson.garson_masa = this;
                             Console.WriteLine("Masa.masa_numara:" + this.masa_numara + " Program.garsonArray[i].garson_numara:" + Program.garsonArray[i].garson_numara);
                             masaya_garson_atandi_mi=true;
                             break;
@@ -94,7 +95,7 @@ namespace Restoranv0
         public Thread garson_thread;
         public Masa garson_masa;
         public Boolean garson_musait_mi=true;
-        
+        static object locker = new object();
         Garson() { }
 
         public Garson(int garson_numara, bool garson_musait_mi)
@@ -107,16 +108,48 @@ namespace Restoranv0
         {
             Console.WriteLine(garson_thread.Name + " is start");
             Thread.Sleep(1000);
-            garson_musait_mi = true;
+            Console.WriteLine(garson_numara + " numarali garson " + garson_masa.masa_numara + " numarali masadaki " + garson_masa.masa_musteri.musteri_ID + " numarali musteriden siparis aldi");
+            Musteri ascininmusterisi = garson_masa.masa_musteri;
+            //Console.Write(garson_numara + " numarali garson ");
+            //Console.Write(garson_masa.masa_numara + " numarali masadaki ");
+            //Console.Write(garson_masa.masa_musteri.musteri_ID + " numarali musteriden siparis aldi\n");
+            // Masa siparisalinanmasa = garson_masa;
+            lock (locker)
+            {
+                garson_musait_mi = true;
+                // garson_masa = null;
+            }
+            //Thread asciicinthread = new Thread(()=>Program.asci.yemekhazirla(siparisalinanmasa.masa_musteri));
+            Thread asciicinthread = new Thread(() => Program.asci.yemekhazirla(ascininmusterisi));
+            asciicinthread.Name = "Asci Thread - "+Program.asci.asci_numara;
+            asciicinthread.Start();
             Console.WriteLine(garson_thread.Name + " is end");
         }
     }
     public class Asci
     {
         public int asci_numara;
-        public Thread asci_thread;
-        public Garson asci_garson;
+        public static Semaphore asci_pool=new Semaphore(initialCount:2,maximumCount:2);
+        //public Musteri asci_musteri;
+        static object locker = new object();
         public Asci() { }
+
+        public Asci(int asci_numara)
+        {
+            this.asci_numara = asci_numara;
+        }
+
+        public void yemekhazirla(Musteri musteri)
+        {
+
+            Console.WriteLine(Thread.CurrentThread.Name + " is start\n" + musteri.musteri_ID + " numarali musterinin siparisi iletildi");
+            asci_pool.WaitOne();
+            Console.WriteLine(Thread.CurrentThread.Name +" is start\n"+musteri.musteri_ID + " numarali musterinin siparisi hazirlaniyor");
+            Thread.Sleep(3000);
+            asci_pool.Release();
+            Console.WriteLine(Thread.CurrentThread.Name + " is end\n"+musteri.musteri_ID + " numarali musterinin siparisi hazirlandi");
+        }  
+
     }
     internal static class Program
     {
@@ -125,6 +158,7 @@ namespace Restoranv0
         //public static List<Musteri> mList = new List<Musteri>();
         public static Masa[] masaArray = new Masa[6];
         public static Garson[] garsonArray = new Garson[3];
+        public static Asci asci= new Asci(0);
         /// <summary>
         /// Uygulamanın ana girdi noktası.
         /// </summary>
