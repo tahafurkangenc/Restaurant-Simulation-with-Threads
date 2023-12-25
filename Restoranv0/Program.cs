@@ -42,6 +42,18 @@ namespace Restoranv0
             //Thread.Sleep(1000);
             Console.WriteLine("THREAD NAME = " + Thread.CurrentThread.Name + " ->ENDING");
         }
+
+        public void yemekYe()
+        {
+            Console.WriteLine("THREAD NAME = " + Thread.CurrentThread.Name + " ->WORKING");
+            Console.WriteLine(musteri_ID+" numarali musteri yemege basladi");
+            Thread.Sleep(3000);
+            Console.WriteLine(musteri_ID + " numarali musteri yemegi bitirdi");
+            Thread musteri_kasa_thread = new Thread(() => Program.kasa.odemeAl(this));
+            musteri_kasa_thread.Name = "KASA THREAD for -> " + this.musteri_ID + " - ID CUSTOMER";
+            musteri_kasa_thread.Start();
+            Console.WriteLine("THREAD NAME = " + Thread.CurrentThread.Name + " ->ENDING");
+        }
     }
     public class Masa
     {
@@ -82,11 +94,12 @@ namespace Restoranv0
                 }
             }
             masa_garson.garson_thread = new Thread(masa_garson.siparisAl);
-            masa_garson.garson_thread.Name = "Garson Thread - "+masa_garson.garson_numara;
+            masa_garson.garson_thread.Name = "Garson Thread - "+masa_garson.garson_numara+" for -> "+masa_numara+" ID Table & "+masa_musteri.musteri_ID+" ID Customer";
             masa_garson.garson_thread.Start();
             masa_garson.garson_thread.Join();
 
-
+            masa_hesap = 50;
+            Console.WriteLine (masa_musteri.musteri_ID +" numarali musteriye "+masa_hesap+" TL hesap kesildi");
         }
     }
     public class Garson
@@ -107,23 +120,27 @@ namespace Restoranv0
         public void siparisAl()
         {
             Console.WriteLine(garson_thread.Name + " is start");
-            Thread.Sleep(1000);
-            Console.WriteLine(garson_numara + " numarali garson " + garson_masa.masa_numara + " numarali masadaki " + garson_masa.masa_musteri.musteri_ID + " numarali musteriden siparis aldi");
-            Musteri ascininmusterisi = garson_masa.masa_musteri;
             //Console.Write(garson_numara + " numarali garson ");
             //Console.Write(garson_masa.masa_numara + " numarali masadaki ");
             //Console.Write(garson_masa.masa_musteri.musteri_ID + " numarali musteriden siparis aldi\n");
             // Masa siparisalinanmasa = garson_masa;
-            lock (locker)
-            {
+            Thread.Sleep(2000);
+            Console.WriteLine(garson_numara + " numarali garson " + garson_masa.masa_numara + " numarali masadaki " + garson_masa.masa_musteri.musteri_ID + " numarali musteriden siparis aldi");
+            Musteri ascininmusterisi = garson_masa.masa_musteri; // bura ile ilgilen
+            //Console.WriteLine("Send this to asci_thread -> " + garson_masa.masa_musteri.musteri_ID);
+            Thread asciicinthread = new Thread(() => Program.asci.yemekhazirla(ascininmusterisi));
+            //Console.WriteLine("We Send this to asci_thread -> " + garson_masa.masa_musteri.musteri_ID);
+            //Thread asciicinthread = new Thread(() => Program.asci.yemekhazirla(ascininmusterisi));
+            asciicinthread.Name = "Asci Thread 0 for -> " + ascininmusterisi.musteri_ID;
+            asciicinthread.Start();
+            //lock (locker)
+            //{
+                
                 garson_musait_mi = true;
                 // garson_masa = null;
-            }
-            //Thread asciicinthread = new Thread(()=>Program.asci.yemekhazirla(siparisalinanmasa.masa_musteri));
-            Thread asciicinthread = new Thread(() => Program.asci.yemekhazirla(ascininmusterisi));
-            asciicinthread.Name = "Asci Thread - "+Program.asci.asci_numara;
-            asciicinthread.Start();
+            //}
             Console.WriteLine(garson_thread.Name + " is end");
+            
         }
     }
     public class Asci
@@ -142,14 +159,52 @@ namespace Restoranv0
         public void yemekhazirla(Musteri musteri)
         {
 
-            Console.WriteLine(Thread.CurrentThread.Name + " is start\n" + musteri.musteri_ID + " numarali musterinin siparisi iletildi");
+            Console.WriteLine(Thread.CurrentThread.Name + " is start ");
+            Console.WriteLine(musteri.musteri_ID + " numarali musterinin siparisi iletildi");
             asci_pool.WaitOne();
-            Console.WriteLine(Thread.CurrentThread.Name +" is start\n"+musteri.musteri_ID + " numarali musterinin siparisi hazirlaniyor");
+            Console.WriteLine(musteri.musteri_ID + " numarali musterinin siparisi hazirlaniyor");
             Thread.Sleep(3000);
             asci_pool.Release();
-            Console.WriteLine(Thread.CurrentThread.Name + " is end\n"+musteri.musteri_ID + " numarali musterinin siparisi hazirlandi");
+            Console.WriteLine(musteri.musteri_ID + " numarali musterinin siparisi hazirlandi");
+            musteri.musteri_thread = new Thread(musteri.yemekYe);
+            musteri.musteri_thread.Name = "MUSTERİ yemekYe() THREAD - " + musteri.musteri_ID;
+            musteri.musteri_thread.Start();
+            Console.WriteLine(Thread.CurrentThread.Name + " is end");
         }  
 
+    }
+    public class Kasa
+    {
+        public int kasa_para;
+        public Thread kasa_thread;
+        static object locker = new object();
+        public Kasa()
+        {
+        }
+        public Kasa(int kasa_para)
+        {
+            this.kasa_para = kasa_para;
+        }
+        public void odemeAl(Musteri musteri)
+        {
+            Console.WriteLine("THREAD NAME = " + Thread.CurrentThread.Name + " ->WORKING");
+            lock (locker)
+            {
+                Console.WriteLine(musteri.musteri_ID + " numarali musteriden " + " TL tutarinda para aliniyor");
+                for (int i = 0; i < Program.masaArray.Length; i++)
+                {
+                    if (Program.masaArray[i].masa_musteri.Equals(musteri))
+                    {
+                        kasa_para = kasa_para + Program.masaArray[i].masa_hesap;
+                        Program.masaArray[i].masa_hesap = 0;
+                        break;
+                    }
+                }
+                Thread.Sleep(1000);
+                Console.WriteLine(musteri.musteri_ID + " numarali musteriden " + " TL tutarinda para alindi");
+            }
+            Console.WriteLine("THREAD NAME = " + Thread.CurrentThread.Name + " ->ENDING");
+        }
     }
     internal static class Program
     {
@@ -159,6 +214,7 @@ namespace Restoranv0
         public static Masa[] masaArray = new Masa[6];
         public static Garson[] garsonArray = new Garson[3];
         public static Asci asci= new Asci(0);
+        public static Kasa kasa =new Kasa(0);
         /// <summary>
         /// Uygulamanın ana girdi noktası.
         /// </summary>

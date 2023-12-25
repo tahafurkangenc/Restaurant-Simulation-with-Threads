@@ -39,7 +39,7 @@ namespace Restoranv0
             for(int i=0;i<Program.musteriList.Count;i++)
             {
                 Program.musteriList[i].musteri_thread = new Thread(Program.musteriList[i].masalaraMusteriAl);
-                Program.musteriList[i].musteri_thread.Name = "Musteri-" + i+" Thread";
+                Program.musteriList[i].musteri_thread.Name = "Musteri Thread - " + i;
                 Program.musteriList[i].musteri_thread.Priority=ThreadPriority.Normal;
                 if (Program.musteriList[i].musteri_yas >= 65)
                 {
