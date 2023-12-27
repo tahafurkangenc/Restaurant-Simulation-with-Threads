@@ -13,7 +13,7 @@ namespace Restoranv0
         public int musteri_ID;
         public int musteri_yas;
         public Thread musteri_thread;
-        static object locker = new object();    
+        static object locker = new object();
         public Musteri(int musteri_ID, int musteri_yas)
         {
             this.musteri_ID = musteri_ID;
@@ -22,23 +22,32 @@ namespace Restoranv0
 
         public void masalaraMusteriAl()
         {
-            Console.WriteLine("THREAD NAME = " + Thread.CurrentThread.Name +" ->WORKING");
-            
+            Console.WriteLine("THREAD NAME = " + Thread.CurrentThread.Name + " ->WORKING");
+            Boolean bekliyor_mu = true;
+            while (bekliyor_mu) 
+            {
                 for (int i = 0; i < Program.masaArray.Length; i++)
                 {
-                   lock (locker)
-                   {
+                    lock (locker)
+                    {
                         if (Program.masaArray[i].masa_numara == -1)
                         {
-                          Program.masaArray[i].masa_numara = i;
-                          Program.masaArray[i].masa_musteri = this;
-                          Program.masaArray[i].masa_thread = new Thread(Program.masaArray[i].musteriislemleri);
-                          Program.masaArray[i].masa_thread.Start();
-                          //Program.musteriList.Remove(this);
-                          break;
+                            Program.masaArray[i].masa_numara = i;
+                            Program.masaArray[i].masa_musteri = this;
+                            Program.masaArray[i].masa_thread = new Thread(Program.masaArray[i].musteriislemleri);
+                            Program.masaArray[i].masa_thread.Start();
+                            //Program.musteriList.Remove(this);
+                            bekliyor_mu=false;
+                            break;
                         }
-                   }
+                    }
                 }
+                if (!(bekliyor_mu))
+                {
+                    break;
+                }
+            }
+            
             //Thread.Sleep(1000);
             Console.WriteLine("THREAD NAME = " + Thread.CurrentThread.Name + " ->ENDING");
         }
@@ -46,7 +55,7 @@ namespace Restoranv0
         public void yemekYe()
         {
             Console.WriteLine("THREAD NAME = " + Thread.CurrentThread.Name + " ->WORKING");
-            Console.WriteLine(musteri_ID+" numarali musteri yemege basladi");
+            Console.WriteLine(musteri_ID + " numarali musteri yemege basladi");
             Thread.Sleep(3000);
             Console.WriteLine(musteri_ID + " numarali musteri yemegi bitirdi");
             Thread musteri_kasa_thread = new Thread(() => Program.kasa.odemeAl(this));
@@ -73,7 +82,7 @@ namespace Restoranv0
             while (true)
             {
                 Boolean masaya_garson_atandi_mi = false;
-                for (int i=0;i<Program.garsonArray.Length;i++)
+                for (int i = 0; i < Program.garsonArray.Length; i++)
                 {
                     lock (locker)
                     {
@@ -83,7 +92,7 @@ namespace Restoranv0
                             masa_garson.garson_musait_mi = false;
                             masa_garson.garson_masa = this;
                             Console.WriteLine("Masa.masa_numara:" + this.masa_numara + " Program.garsonArray[i].garson_numara:" + Program.garsonArray[i].garson_numara);
-                            masaya_garson_atandi_mi=true;
+                            masaya_garson_atandi_mi = true;
                             break;
                         }
                     }
@@ -94,12 +103,12 @@ namespace Restoranv0
                 }
             }
             masa_garson.garson_thread = new Thread(masa_garson.siparisAl);
-            masa_garson.garson_thread.Name = "Garson Thread - "+masa_garson.garson_numara+" for -> "+masa_numara+" ID Table & "+masa_musteri.musteri_ID+" ID Customer";
+            masa_garson.garson_thread.Name = "Garson Thread - " + masa_garson.garson_numara + " for -> " + masa_numara + " ID Table & " + masa_musteri.musteri_ID + " ID Customer";
             masa_garson.garson_thread.Start();
             masa_garson.garson_thread.Join();
 
             masa_hesap = 50;
-            Console.WriteLine (masa_musteri.musteri_ID +" numarali musteriye "+masa_hesap+" TL hesap kesildi");
+            Console.WriteLine(masa_musteri.musteri_ID + " numarali musteriye " + masa_hesap + " TL hesap kesildi");
         }
     }
     public class Garson
@@ -107,7 +116,7 @@ namespace Restoranv0
         public int garson_numara;
         public Thread garson_thread;
         public Masa garson_masa;
-        public Boolean garson_musait_mi=true;
+        public Boolean garson_musait_mi = true;
         static object locker = new object();
         Garson() { }
 
@@ -135,18 +144,18 @@ namespace Restoranv0
             asciicinthread.Start();
             //lock (locker)
             //{
-                
-                garson_musait_mi = true;
-                // garson_masa = null;
-            //}
+
+            garson_musait_mi = true;
+            // garson_masa = null;
+           // }
             Console.WriteLine(garson_thread.Name + " is end");
-            
+
         }
     }
     public class Asci
     {
         public int asci_numara;
-        public static Semaphore asci_pool=new Semaphore(initialCount:2,maximumCount:2);
+        public static Semaphore asci_pool = new Semaphore(initialCount: 2, maximumCount: 2);
         //public Musteri asci_musteri;
         static object locker = new object();
         public Asci() { }
@@ -170,7 +179,7 @@ namespace Restoranv0
             musteri.musteri_thread.Name = "MUSTERİ yemekYe() THREAD - " + musteri.musteri_ID;
             musteri.musteri_thread.Start();
             Console.WriteLine(Thread.CurrentThread.Name + " is end");
-        }  
+        }
 
     }
     public class Kasa
@@ -197,6 +206,9 @@ namespace Restoranv0
                     {
                         kasa_para = kasa_para + Program.masaArray[i].masa_hesap;
                         Program.masaArray[i].masa_hesap = 0;
+                        Program.masaArray[i].masa_numara = -1;
+                        //Program.masaArray[i].masa_musteri = null;
+                        //Program.masaArray[i].masa_garson = null;
                         break;
                     }
                 }
@@ -209,23 +221,23 @@ namespace Restoranv0
     internal static class Program
     {
         public static Random random = new Random();
-        public static List<Musteri> musteriList= new List<Musteri>();
+        public static List<Musteri> musteriList = new List<Musteri>();
         //public static List<Musteri> mList = new List<Musteri>();
         public static Masa[] masaArray = new Masa[6];
         public static Garson[] garsonArray = new Garson[3];
-        public static Asci asci= new Asci(0);
-        public static Kasa kasa =new Kasa(0);
+        public static Asci asci = new Asci(0);
+        public static Kasa kasa = new Kasa(0);
         /// <summary>
         /// Uygulamanın ana girdi noktası.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            for(int i = 0; i < masaArray.Length; i++)
+            for (int i = 0; i < masaArray.Length; i++)
             {
-                masaArray[i] = new Masa(-1,null);
+                masaArray[i] = new Masa(-1, null);
             }
-            for(int i = 0; i < garsonArray.Length; i++)
+            for (int i = 0; i < garsonArray.Length; i++)
             {
                 garsonArray[i] = new Garson(i, true);
             }
@@ -234,7 +246,7 @@ namespace Restoranv0
             // Müşterileri Oluşturma
             for (int i = 0; i < musterisayisi_tmp; i++)
             {
-                musteriList.Add(new Musteri(i,random.Next(5,90)));
+                musteriList.Add(new Musteri(i, random.Next(5, 90)));
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

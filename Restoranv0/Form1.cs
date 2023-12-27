@@ -23,9 +23,9 @@ namespace Restoranv0
             musteriDataGridView.ColumnCount = 2;
             musteriDataGridView.Columns[0].Name = "Müşteri ID";
             musteriDataGridView.Columns[1].Name = "Müşteri Yaş";
-            for (int i= 0; i < Program.musteriList.Count; i++)
+            for (int i = 0; i < Program.musteriList.Count; i++)
             {
-               DataGridViewRow row = new DataGridViewRow();
+                DataGridViewRow row = new DataGridViewRow();
                 row.CreateCells(musteriDataGridView);
                 row.Cells[0].Value = Program.musteriList[i].musteri_ID;
                 row.Cells[1].Value = Program.musteriList[i].musteri_yas;
@@ -36,18 +36,18 @@ namespace Restoranv0
 
         private void btn_masayamusterial_Click(object sender, EventArgs e)
         {
-            for(int i=0;i<Program.musteriList.Count;i++)
+            for (int i = 0; i < Program.musteriList.Count; i++)
             {
                 Program.musteriList[i].musteri_thread = new Thread(Program.musteriList[i].masalaraMusteriAl);
                 Program.musteriList[i].musteri_thread.Name = "Musteri Thread - " + i;
-                Program.musteriList[i].musteri_thread.Priority=ThreadPriority.Normal;
+                Program.musteriList[i].musteri_thread.Priority = ThreadPriority.Normal;
                 if (Program.musteriList[i].musteri_yas >= 65)
                 {
                     Program.musteriList[i].musteri_thread.Priority = ThreadPriority.Highest;
                 }
             }
             for (int i = 0; i < Program.musteriList.Count; i++)
-            { 
+            {
                 Program.musteriList[i].musteri_thread.Start();
                 Program.musteriList[i].musteri_thread.Join();
             }
@@ -73,7 +73,7 @@ namespace Restoranv0
                     row.Cells[2].Value = Program.masaArray[i].masa_musteri.musteri_yas;
                     masalarDataGridView.Rows.Add(row);
                 }
-                
+
             }
         }
     }
