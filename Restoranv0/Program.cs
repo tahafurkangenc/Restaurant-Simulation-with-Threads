@@ -24,7 +24,7 @@ namespace Restoranv0
         {
             Console.WriteLine("THREAD NAME = " + Thread.CurrentThread.Name + " ->WORKING");
             Boolean bekliyor_mu = true;
-            while (bekliyor_mu) 
+            while (bekliyor_mu)
             {
                 for (int i = 0; i < Program.masaArray.Length; i++)
                 {
@@ -37,7 +37,7 @@ namespace Restoranv0
                             Program.masaArray[i].masa_thread = new Thread(Program.masaArray[i].musteriislemleri);
                             Program.masaArray[i].masa_thread.Start();
                             //Program.musteriList.Remove(this);
-                            bekliyor_mu=false;
+                            bekliyor_mu = false;
                             break;
                         }
                     }
@@ -47,7 +47,7 @@ namespace Restoranv0
                     break;
                 }
             }
-            
+
             //Thread.Sleep(1000);
             Console.WriteLine("THREAD NAME = " + Thread.CurrentThread.Name + " ->ENDING");
         }
@@ -147,7 +147,7 @@ namespace Restoranv0
 
             garson_musait_mi = true;
             // garson_masa = null;
-           // }
+            // }
             Console.WriteLine(garson_thread.Name + " is end");
 
         }
@@ -158,6 +158,9 @@ namespace Restoranv0
         public static Semaphore asci_pool = new Semaphore(initialCount: 2, maximumCount: 2);
         //public Musteri asci_musteri;
         static object locker = new object();
+        public List<Musteri> musteri_siparisiletildi= new List<Musteri>();
+        public List<Musteri> musteri_hazirlaniyor = new List<Musteri>();
+        public List<Musteri> musteri_hazirlandi = new List<Musteri>();
         public Asci() { }
 
         public Asci(int asci_numara)
@@ -170,11 +173,16 @@ namespace Restoranv0
 
             Console.WriteLine(Thread.CurrentThread.Name + " is start ");
             Console.WriteLine(musteri.musteri_ID + " numarali musterinin siparisi iletildi");
+            musteri_siparisiletildi.Add(musteri);
             asci_pool.WaitOne();
             Console.WriteLine(musteri.musteri_ID + " numarali musterinin siparisi hazirlaniyor");
+            musteri_siparisiletildi.Remove(musteri);
+            musteri_hazirlaniyor.Add(musteri);
             Thread.Sleep(3000);
             asci_pool.Release();
             Console.WriteLine(musteri.musteri_ID + " numarali musterinin siparisi hazirlandi");
+            musteri_hazirlaniyor.Remove(musteri);
+            musteri_hazirlandi.Add(musteri);
             musteri.musteri_thread = new Thread(musteri.yemekYe);
             musteri.musteri_thread.Name = "MUSTERİ yemekYe() THREAD - " + musteri.musteri_ID;
             musteri.musteri_thread.Start();
@@ -187,6 +195,8 @@ namespace Restoranv0
         public int kasa_para;
         public Thread kasa_thread;
         static object locker = new object();
+        public List<Musteri> kasa_odemeyapacakmusteriler = new List<Musteri>();
+        public List<Musteri> kasa_odemeyapmismusteriler = new List<Musteri>();
         public Kasa()
         {
         }
@@ -197,6 +207,7 @@ namespace Restoranv0
         public void odemeAl(Musteri musteri)
         {
             Console.WriteLine("THREAD NAME = " + Thread.CurrentThread.Name + " ->WORKING");
+            kasa_odemeyapacakmusteriler.Add(musteri);
             lock (locker)
             {
                 Console.WriteLine(musteri.musteri_ID + " numarali musteriden " + " TL tutarinda para aliniyor");
@@ -214,6 +225,8 @@ namespace Restoranv0
                 }
                 Thread.Sleep(1000);
                 Console.WriteLine(musteri.musteri_ID + " numarali musteriden " + " TL tutarinda para alindi");
+                kasa_odemeyapacakmusteriler.Remove(musteri);
+                kasa_odemeyapmismusteriler.Add(musteri);
             }
             Console.WriteLine("THREAD NAME = " + Thread.CurrentThread.Name + " ->ENDING");
         }
@@ -240,13 +253,6 @@ namespace Restoranv0
             for (int i = 0; i < garsonArray.Length; i++)
             {
                 garsonArray[i] = new Garson(i, true);
-            }
-            int musterisayisi_tmp = random.Next(6, 20);
-            Console.WriteLine(musterisayisi_tmp);
-            // Müşterileri Oluşturma
-            for (int i = 0; i < musterisayisi_tmp; i++)
-            {
-                musteriList.Add(new Musteri(i, random.Next(5, 90)));
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
