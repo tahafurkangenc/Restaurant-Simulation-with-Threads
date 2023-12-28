@@ -137,10 +137,11 @@ namespace Restoranv0
             Console.WriteLine(garson_numara + " numarali garson " + garson_masa.masa_numara + " numarali masadaki " + garson_masa.masa_musteri.musteri_ID + " numarali musteriden siparis aldi");
             Musteri ascininmusterisi = garson_masa.masa_musteri; // bura ile ilgilen
             //Console.WriteLine("Send this to asci_thread -> " + garson_masa.masa_musteri.musteri_ID);
-            Thread asciicinthread = new Thread(() => Program.asci.yemekhazirla(ascininmusterisi));
+            Asci siparis_gonderilecek_asci = Program.asciArray.OrderBy(p => (p.musteri_siparisiletildi.Count()+p.musteri_hazirlaniyor.Count())).FirstOrDefault();
+            Thread asciicinthread = new Thread(() => siparis_gonderilecek_asci.yemekhazirla(ascininmusterisi));
             //Console.WriteLine("We Send this to asci_thread -> " + garson_masa.masa_musteri.musteri_ID);
             //Thread asciicinthread = new Thread(() => Program.asci.yemekhazirla(ascininmusterisi));
-            asciicinthread.Name = "Asci Thread 0 for -> " + ascininmusterisi.musteri_ID;
+            asciicinthread.Name = "Asci Thread "+siparis_gonderilecek_asci.asci_numara+" for -> " + ascininmusterisi.musteri_ID;
             asciicinthread.Start();
             //lock (locker)
             //{
@@ -238,7 +239,7 @@ namespace Restoranv0
         //public static List<Musteri> mList = new List<Musteri>();
         public static Masa[] masaArray = new Masa[6];
         public static Garson[] garsonArray = new Garson[3];
-        public static Asci asci = new Asci(0);
+        public static Asci[] asciArray = new Asci[1];
         public static Kasa kasa = new Kasa(0);
         /// <summary>
         /// Uygulamanın ana girdi noktası.
@@ -253,6 +254,10 @@ namespace Restoranv0
             for (int i = 0; i < garsonArray.Length; i++)
             {
                 garsonArray[i] = new Garson(i, true);
+            }
+            for(int i = 0;i<asciArray.Length; i++)
+            {
+                asciArray[i]=new Asci(i);
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

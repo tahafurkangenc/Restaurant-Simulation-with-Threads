@@ -145,33 +145,38 @@ namespace Restoranv0
                 }
             }
             asciDataGridView.Rows.Clear();
-            for (int i = 0; i < Program.asci.musteri_siparisiletildi.Count; i++)
+            for(int j=0;j<Program.asciArray.Length;j++)
             {
-                DataGridViewRow row = new DataGridViewRow();
-                row.CreateCells(asciDataGridView);
-                row.Cells[0].Value = Program.asci.asci_numara;
-                row.Cells[1].Value = Program.asci.musteri_siparisiletildi[i].musteri_ID;
-                row.Cells[2].Value = "Sipariş İletildi";
-                asciDataGridView.Rows.Add(row);
+                
+                for (int i = 0; i < Program.asciArray[j].musteri_siparisiletildi.Count; i++)
+                {
+                    DataGridViewRow row = new DataGridViewRow();
+                    row.CreateCells(asciDataGridView);
+                    row.Cells[0].Value = Program.asciArray[j].asci_numara;
+                    row.Cells[1].Value = Program.asciArray[j].musteri_siparisiletildi[i].musteri_ID;
+                    row.Cells[2].Value = "Sipariş İletildi";
+                    asciDataGridView.Rows.Add(row);
+                }
+                for (int i = 0; i < Program.asciArray[j].musteri_hazirlaniyor.Count; i++)
+                {
+                    DataGridViewRow row = new DataGridViewRow();
+                    row.CreateCells(asciDataGridView);
+                    row.Cells[0].Value = Program.asciArray[j].asci_numara;
+                    row.Cells[1].Value = Program.asciArray[j].musteri_hazirlaniyor[i].musteri_ID;
+                    row.Cells[2].Value = "Hazırlanıyor";
+                    asciDataGridView.Rows.Add(row);
+                }
+                for (int i = 0; i < Program.asciArray[j].musteri_hazirlandi.Count; i++)
+                {
+                    DataGridViewRow row = new DataGridViewRow();
+                    row.CreateCells(asciDataGridView);
+                    row.Cells[0].Value = Program.asciArray[j].asci_numara;
+                    row.Cells[1].Value = Program.asciArray[j].musteri_hazirlandi[i].musteri_ID;
+                    row.Cells[2].Value = "Sipariş Hazır";
+                    asciDataGridView.Rows.Add(row);
+                }
             }
-            for (int i = 0; i < Program.asci.musteri_hazirlaniyor.Count; i++)
-            {
-                DataGridViewRow row = new DataGridViewRow();
-                row.CreateCells(asciDataGridView);
-                row.Cells[0].Value = Program.asci.asci_numara;
-                row.Cells[1].Value = Program.asci.musteri_hazirlaniyor[i].musteri_ID;
-                row.Cells[2].Value = "Hazırlanıyor";
-                asciDataGridView.Rows.Add(row);
-            }
-            for (int i = 0; i < Program.asci.musteri_hazirlandi.Count; i++)
-            {
-                DataGridViewRow row = new DataGridViewRow();
-                row.CreateCells(asciDataGridView);
-                row.Cells[0].Value = Program.asci.asci_numara;
-                row.Cells[1].Value = Program.asci.musteri_hazirlandi[i].musteri_ID;
-                row.Cells[2].Value = "Sipariş Hazır";
-                asciDataGridView.Rows.Add(row);
-            }
+            
             kasaDataGridView.Rows.Clear();
             for (int i = 0; i < Program.kasa.kasa_odemeyapacakmusteriler.Count; i++)
             {
