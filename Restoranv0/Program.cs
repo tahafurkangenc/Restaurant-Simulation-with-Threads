@@ -147,7 +147,7 @@ namespace Restoranv0
             //{
 
             garson_musait_mi = true;
-            // garson_masa = null;
+             garson_masa = null; // sonradan eklendi kontrol yap
             // }
             Console.WriteLine(garson_thread.Name + " is end");
 
@@ -239,7 +239,7 @@ namespace Restoranv0
         //public static List<Musteri> mList = new List<Musteri>();
         public static Masa[] masaArray = new Masa[6];
         public static Garson[] garsonArray = new Garson[3];
-        public static Asci[] asciArray = new Asci[1];
+        public static Asci[] asciArray = new Asci[2];
         public static Kasa kasa = new Kasa(0);
         /// <summary>
         /// Uygulamanın ana girdi noktası.

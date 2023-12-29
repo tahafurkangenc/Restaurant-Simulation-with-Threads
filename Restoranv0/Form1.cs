@@ -57,7 +57,7 @@ namespace Restoranv0
         public void masayamusterial_Thread()
         {
             List<Musteri> eklenecekmusteriler_list = new List<Musteri>();
-            int musterisayisi_tmp = Program.random.Next(6, 20);
+            int musterisayisi_tmp = Program.random.Next(1, 10);
             Console.WriteLine(musterisayisi_tmp);
             // Müşterileri Oluşturma
             for (int i = 0; i < musterisayisi_tmp; i++)
@@ -78,12 +78,18 @@ namespace Restoranv0
                 if (eklenecekmusteriler_list[i].musteri_yas >= 65)
                 {
                     eklenecekmusteriler_list[i].musteri_thread.Priority = ThreadPriority.Highest;
+                    eklenecekmusteriler_list[i].musteri_thread.Start();
+                    eklenecekmusteriler_list[i].musteri_thread.Join();
                 }
             }
             for (int i = 0; i < eklenecekmusteriler_list.Count; i++)
             {
-                eklenecekmusteriler_list[i].musteri_thread.Start();
-                eklenecekmusteriler_list[i].musteri_thread.Join();
+                if (eklenecekmusteriler_list[i].musteri_yas < 65)
+                {
+                    //eklenecekmusteriler_list[i].musteri_thread.Priority = ThreadPriority.Highest;
+                    eklenecekmusteriler_list[i].musteri_thread.Start();
+                    eklenecekmusteriler_list[i].musteri_thread.Join();
+                }
             }
         }
 
