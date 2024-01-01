@@ -202,5 +202,209 @@ namespace Restoranv0
                 kasaDataGridView.Rows.Add(row);
             }
         }
+
+        private void btn_problem2_Click(object sender, EventArgs e)
+        {
+            int siradakimusterisayisi = int.Parse(musteriSayisiTextBox.Text.Trim());
+            if (siradakimusterisayisi <= 100)
+            {
+                Console.WriteLine(siradakimusterisayisi);
+                int maxkazanc = 0;
+                int maxkazanc_masasayisi = siradakimusterisayisi;
+                int maxkazanc_garsonsayisi = siradakimusterisayisi;
+                int maxkazanc_ascisayisi = siradakimusterisayisi;
+                for (int masasayisi = 1; masasayisi < siradakimusterisayisi; masasayisi++)
+                {
+                    for (int garsonsayisi = 1; garsonsayisi < siradakimusterisayisi; garsonsayisi++)
+                    {
+                        for (int ascisayisi = 1; ascisayisi < siradakimusterisayisi; ascisayisi++)
+                        {
+                            int eldeedilenkazanc = pb2_kazanchesapla(siradakimusterisayisi, masasayisi, garsonsayisi, ascisayisi);
+                            if (eldeedilenkazanc > maxkazanc)
+                            {
+                                maxkazanc = eldeedilenkazanc;
+                                maxkazanc_ascisayisi = ascisayisi;
+                                maxkazanc_garsonsayisi = garsonsayisi;
+                                maxkazanc_masasayisi = masasayisi;
+                            }
+                        }
+                    }
+                }
+                Console.WriteLine("MAX KAZANC IHTİMALİ");
+                Console.WriteLine("MUSTERİ SAYİSİ :" + siradakimusterisayisi);
+                Console.WriteLine("KAZANC :" + maxkazanc);
+                Console.WriteLine("MASA SAYISI :" + maxkazanc_masasayisi);
+                Console.WriteLine("GARSON SAYISI :" + maxkazanc_garsonsayisi);
+                Console.WriteLine("ASCI SAYISI :" + maxkazanc_ascisayisi);
+
+                lbl_kazanc.Text = "Kazanç : " + maxkazanc;
+                lbl_masasayisi.Text = "Masa Sayısı : " + maxkazanc_masasayisi;
+                lbl_garsonsayisi.Text = "Garson Sayısı : " + maxkazanc_garsonsayisi;
+                lbl_ascisayisi.Text = "Aşçı Sayısı : " + maxkazanc_ascisayisi;
+            }
+            
+        }
+
+        public int pb2_kazanchesapla (int siradakimusterisayisi, int masasayisi , int garsonsayisi , int ascisayisi)
+        {
+            Masa_pb2[] masa_pb2 = new Masa_pb2[masasayisi];
+            for (int i = 0; i < masa_pb2.Length; i++)
+            {
+                masa_pb2[i] = new Masa_pb2(0, false, false, false);
+            }
+            int[] garson = new int[garsonsayisi];
+            for (int i = 0; i < garson.Length; i++)
+            {
+                garson[i] = 0;
+            }
+            int[] asci = new int[ascisayisi];
+            for (int i = 0; i < asci.Length; i++)
+            {
+                asci[i] = 0;
+            }
+            int kasa = 0;
+            int toplammusterisayisi = 0;
+            for (int toplamsure = 0; toplamsure < 20; toplamsure++) // toplam 20 saniye araştıracağız
+            {
+              //  Console.WriteLine("\n\n" + toplamsure + ". SECOND");
+                for (int i = 0; i < masa_pb2.Length; i++) // tüm masaları dönüyoruz
+                {
+                    if (masa_pb2[i].masatoplamsure <= toplamsure) // eğer masanın durumu müsait ise (ek bir kontrol)
+                    {
+                        if (masa_pb2[i].siparisaldimi == false && masa_pb2[i].masatoplamsure <= toplamsure) // masa sipariş almamış
+                        {
+                            for (int j = 0; j < garson.Length; j++) // tüm garsonlara bakıyoruz
+                            {
+                                if (garson[j] <= toplamsure) // eğer garson müsait ise
+                                {
+                                    toplammusterisayisi++;
+                                    //Console.WriteLine(i + " numarali masaya " + j + " numarali garson atandi \n Toplam müşteri : " + toplammusterisayisi);
+                                    garson[j] = toplamsure + 2; //2 saniye meşguliyet veriyoruz
+                                    masa_pb2[i].masatoplamsure = toplamsure + 2; // masaya da aynı meşguliyeti veriyoruz
+                                    //Console.WriteLine("Masa -)" + i + " süresi ->" + masa_pb2[i].masatoplamsure);
+                                    masa_pb2[i].siparisaldimi = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (masa_pb2[i].siparisaldimi == true && masa_pb2[i].yemekyapildimi == false && masa_pb2[i].masatoplamsure <= toplamsure) // masa yemeğini almamışsa
+                        {
+                            for (int j = 0; j < asci.Length; j++) // tüm garsonlara bakıyoruz
+                            {
+                                if (asci[j] <= toplamsure) // eğer garson müsait ise
+                                {
+                                  //  Console.WriteLine(i + " numarali masaya " + j + " numarali asci atandi");
+                                    asci[j] = toplamsure + 3; //3 saniye meşguliyet veriyoruz
+                                    masa_pb2[i].masatoplamsure = toplamsure + 6; // asci ile beraber 6 saniyelik süre veriyoruz
+                                   // Console.WriteLine("Masa -)" + i + " süresi ->" + masa_pb2[i].masatoplamsure);
+                                    masa_pb2[i].yemekyapildimi = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (masa_pb2[i].siparisaldimi == true && masa_pb2[i].yemekyapildimi == true && masa_pb2[i].odendimi == false && masa_pb2[i].masatoplamsure <= toplamsure) // masa yemeğini almamışsa
+                        {
+                            if (kasa <= toplamsure) // eğer kasa müsait ise
+                            {
+                                //Console.WriteLine(i + " numarali masa odemeye gitti ");
+                                kasa = toplamsure + 1; // bir saniye meşguliyet veriyoruz
+                                masa_pb2[i].masatoplamsure = toplamsure + 1; // masaya da aynı süreyi veriyoruz
+                               // Console.WriteLine("Masa -)" + i + " süresi ->" + masa_pb2[i].masatoplamsure);
+                                masa_pb2[i].odendimi = true;
+
+                            }
+                        }
+                        if (masa_pb2[i].siparisaldimi == true && masa_pb2[i].yemekyapildimi == true && masa_pb2[i].odendimi == true) // masa yemeğini almamışsa
+                        {
+                            masa_pb2[i].siparisaldimi = false;
+                            masa_pb2[i].yemekyapildimi = false;
+                            masa_pb2[i].odendimi = false;
+                           // Console.WriteLine(i + " numarali masadaki musteri gitti");
+                            //masa_pb2[i].masatoplamsure = toplamsure;
+                        }
+                    }
+                }
+            }
+            //Console.WriteLine("Toplam müşteri : " + toplammusterisayisi);
+            //Console.WriteLine("Toplam Kazanc:" + (toplammusterisayisi - (masa_pb2.Length + garson.Length + (asci.Length / 2))));
+
+            if (siradakimusterisayisi >= toplammusterisayisi)
+            {
+                //Console.WriteLine("Toplam Kazanc (masa:" + masa_pb2.Length + ",garson:" + garson.Length + ",asci:" + asci.Length + ") RETURN:" + (toplammusterisayisi - (masa_pb2.Length + garson.Length + (asci.Length / 2))));
+                return toplammusterisayisi - (masa_pb2.Length + garson.Length + (asci.Length / 2));
+            }
+            else
+            {
+                //Console.WriteLine("Toplam Kazanc (masa:"+masa_pb2.Length+",garson:"+garson.Length+",asci:"+asci.Length+") RETURN:" + (siradakimusterisayisi - (masa_pb2.Length + garson.Length + (asci.Length / 2))));
+                return siradakimusterisayisi - (masa_pb2.Length + garson.Length + (asci.Length / 2));
+            }
+        }
+
+        private void btn_problem2_sureli_Click(object sender, EventArgs e)
+        {
+            int siradakimusterisayisi = int.Parse(simulasyonSuresiTextBox.Text.Trim())*60/ int.Parse(musteriPeriyoduTextBox.Text.Trim());
+            if (siradakimusterisayisi <= 100)
+            {
+                Console.WriteLine(siradakimusterisayisi);
+                int maxkazanc = 0;
+                int maxkazanc_masasayisi = siradakimusterisayisi;
+                int maxkazanc_garsonsayisi = siradakimusterisayisi;
+                int maxkazanc_ascisayisi = siradakimusterisayisi;
+                for (int masasayisi = 1; masasayisi < siradakimusterisayisi; masasayisi++)
+                {
+                    for (int garsonsayisi = 1; garsonsayisi < siradakimusterisayisi; garsonsayisi++)
+                    {
+                        for (int ascisayisi = 1; ascisayisi < siradakimusterisayisi; ascisayisi++)
+                        {
+                            int eldeedilenkazanc = pb2_kazanchesapla(siradakimusterisayisi, masasayisi, garsonsayisi, ascisayisi);
+                            if (eldeedilenkazanc > maxkazanc)
+                            {
+                                maxkazanc = eldeedilenkazanc;
+                                maxkazanc_ascisayisi = ascisayisi;
+                                maxkazanc_garsonsayisi = garsonsayisi;
+                                maxkazanc_masasayisi = masasayisi;
+                            }
+                        }
+                    }
+                }
+                Console.WriteLine("MAX KAZANC IHTİMALİ");
+                Console.WriteLine("MUSTERİ SAYİSİ :" + siradakimusterisayisi);
+                Console.WriteLine("KAZANC :" + maxkazanc);
+                Console.WriteLine("MASA SAYISI :" + maxkazanc_masasayisi);
+                Console.WriteLine("GARSON SAYISI :" + maxkazanc_garsonsayisi);
+                Console.WriteLine("ASCI SAYISI :" + maxkazanc_ascisayisi);
+
+                lbl_kazanc.Text = "Kazanç : " + maxkazanc;
+                lbl_masasayisi.Text = "Masa Sayısı : " + maxkazanc_masasayisi;
+                lbl_garsonsayisi.Text = "Garson Sayısı : " + maxkazanc_garsonsayisi;
+                lbl_ascisayisi.Text = "Aşçı Sayısı : " + maxkazanc_ascisayisi;
+            }
+            
+        }
+
+    }
+
+    public class Masa_pb2
+    {
+        public int masatoplamsure;
+        public Boolean siparisaldimi;
+        public Boolean yemekyapildimi;
+        public Boolean odendimi;
+
+        public Masa_pb2() 
+        {
+            this.masatoplamsure = 0;
+            this.siparisaldimi = false;
+            this.yemekyapildimi = false;
+            this.odendimi = false;
+        }
+
+        public Masa_pb2(int masatoplamsure, bool siparisaldimi, bool yemekyapildimi, bool odendimi)
+        {
+            this.masatoplamsure = masatoplamsure;
+            this.siparisaldimi = siparisaldimi;
+            this.yemekyapildimi = yemekyapildimi;
+            this.odendimi = odendimi;
+        }
     }
 }
