@@ -43,6 +43,7 @@ namespace Restoranv0
             kasaDataGridView.ColumnCount = 2;
             kasaDataGridView.Columns[0].Name = "Müşteri ID";
             kasaDataGridView.Columns[1].Name = "Ödeme Durumu";
+            progressBar1.Visible = false;
         }
 
         private void btn_masayamusterial_Click(object sender, EventArgs e)
@@ -208,6 +209,11 @@ namespace Restoranv0
             int siradakimusterisayisi = int.Parse(musteriSayisiTextBox.Text.Trim());
             if (siradakimusterisayisi <= 100 && siradakimusterisayisi >= 5)
             {
+                progressBar1.Visible = true;
+                progressBar1.Value = 0;
+
+                // ProgressBar'ın en büyük değeri (100) belirle
+                progressBar1.Maximum = (siradakimusterisayisi-1)* (siradakimusterisayisi - 1)* (siradakimusterisayisi - 1);
                 Console.WriteLine(siradakimusterisayisi);
                 int maxkazanc = 0;
                 int maxkazanc_masasayisi = siradakimusterisayisi;
@@ -219,6 +225,7 @@ namespace Restoranv0
                     {
                         for (int ascisayisi = 1; ascisayisi < siradakimusterisayisi; ascisayisi++)
                         {
+                            progressBar1.Value=progressBar1.Value + 1;
                             int eldeedilenkazanc = pb2_kazanchesapla(siradakimusterisayisi, masasayisi, garsonsayisi, ascisayisi);
                             if (eldeedilenkazanc > maxkazanc)
                             {
@@ -241,6 +248,7 @@ namespace Restoranv0
                 lbl_masasayisi.Text = "Masa Sayısı : " + maxkazanc_masasayisi;
                 lbl_garsonsayisi.Text = "Garson Sayısı : " + maxkazanc_garsonsayisi;
                 lbl_ascisayisi.Text = "Aşçı Sayısı : " + maxkazanc_ascisayisi;
+                progressBar1.Visible = false;
             }
 
         }
@@ -347,6 +355,11 @@ namespace Restoranv0
             int siradakimusterisayisi = int.Parse(simulasyonSuresiTextBox.Text.Trim()) * 60 / int.Parse(musteriPeriyoduTextBox.Text.Trim());
             if (siradakimusterisayisi <= 100 && siradakimusterisayisi >= 5)
             {
+                progressBar1.Visible = true;
+                progressBar1.Value = 0;
+
+                // ProgressBar'ın en büyük değeri (100) belirle
+                progressBar1.Maximum = (siradakimusterisayisi - 1) * (siradakimusterisayisi - 1) * (siradakimusterisayisi - 1);
                 Console.WriteLine(siradakimusterisayisi);
                 int maxkazanc = 0;
                 int maxkazanc_masasayisi = siradakimusterisayisi;
@@ -358,6 +371,7 @@ namespace Restoranv0
                     {
                         for (int ascisayisi = 1; ascisayisi < siradakimusterisayisi; ascisayisi++)
                         {
+                            progressBar1.Value = progressBar1.Value + 1;
                             int eldeedilenkazanc = pb2_kazanchesapla(siradakimusterisayisi, masasayisi, garsonsayisi, ascisayisi);
                             if (eldeedilenkazanc > maxkazanc)
                             {
@@ -380,7 +394,13 @@ namespace Restoranv0
                 lbl_masasayisi.Text = "Masa Sayısı : " + maxkazanc_masasayisi;
                 lbl_garsonsayisi.Text = "Garson Sayısı : " + maxkazanc_garsonsayisi;
                 lbl_ascisayisi.Text = "Aşçı Sayısı : " + maxkazanc_ascisayisi;
+                progressBar1.Visible = false;
             }
+
+        }
+
+        private void progressBar1_Click(object sender, EventArgs e)
+        {
 
         }
     }

@@ -54,6 +54,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.musteriDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.masalarDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.garsonlarDataGridView)).BeginInit();
@@ -289,11 +290,20 @@
             this.label9.Text = "Lütfen max 100 \r\nkişi , min 5 kişi\r\nolacak şekilde\r\ngiriş yapınız";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(12, 525);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(345, 10);
+            this.progressBar1.TabIndex = 27;
+            this.progressBar1.Click += new System.EventHandler(this.progressBar1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1260, 530);
+            this.ClientSize = new System.Drawing.Size(1260, 545);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
@@ -360,5 +370,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
