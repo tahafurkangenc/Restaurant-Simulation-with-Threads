@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Restoranv0
+namespace Restoranv0 //bitmiştir. Hayırlı olsun
 {
     public class Musteri
     {
@@ -137,17 +137,17 @@ namespace Restoranv0
             Console.WriteLine(garson_numara + " numarali garson " + garson_masa.masa_numara + " numarali masadaki " + garson_masa.masa_musteri.musteri_ID + " numarali musteriden siparis aldi");
             Musteri ascininmusterisi = garson_masa.masa_musteri; // bura ile ilgilen
             //Console.WriteLine("Send this to asci_thread -> " + garson_masa.masa_musteri.musteri_ID);
-            Asci siparis_gonderilecek_asci = Program.asciArray.OrderBy(p => (p.musteri_siparisiletildi.Count()+p.musteri_hazirlaniyor.Count())).FirstOrDefault();
+            Asci siparis_gonderilecek_asci = Program.asciArray.OrderBy(p => (p.musteri_siparisiletildi.Count() + p.musteri_hazirlaniyor.Count())).FirstOrDefault();
             Thread asciicinthread = new Thread(() => siparis_gonderilecek_asci.yemekhazirla(ascininmusterisi));
             //Console.WriteLine("We Send this to asci_thread -> " + garson_masa.masa_musteri.musteri_ID);
             //Thread asciicinthread = new Thread(() => Program.asci.yemekhazirla(ascininmusterisi));
-            asciicinthread.Name = "Asci Thread "+siparis_gonderilecek_asci.asci_numara+" for -> " + ascininmusterisi.musteri_ID;
+            asciicinthread.Name = "Asci Thread " + siparis_gonderilecek_asci.asci_numara + " for -> " + ascininmusterisi.musteri_ID;
             asciicinthread.Start();
             //lock (locker)
             //{
 
             garson_musait_mi = true;
-             garson_masa = null; // sonradan eklendi kontrol yap
+            garson_masa = null; // sonradan eklendi kontrol yap
             // }
             Console.WriteLine(garson_thread.Name + " is end");
 
@@ -159,7 +159,7 @@ namespace Restoranv0
         public static Semaphore asci_pool = new Semaphore(initialCount: 2, maximumCount: 2);
         //public Musteri asci_musteri;
         static object locker = new object();
-        public List<Musteri> musteri_siparisiletildi= new List<Musteri>();
+        public List<Musteri> musteri_siparisiletildi = new List<Musteri>();
         public List<Musteri> musteri_hazirlaniyor = new List<Musteri>();
         public List<Musteri> musteri_hazirlandi = new List<Musteri>();
         public Asci() { }
@@ -255,9 +255,9 @@ namespace Restoranv0
             {
                 garsonArray[i] = new Garson(i, true);
             }
-            for(int i = 0;i<asciArray.Length; i++)
+            for (int i = 0; i < asciArray.Length; i++)
             {
-                asciArray[i]=new Asci(i);
+                asciArray[i] = new Asci(i);
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

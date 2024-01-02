@@ -76,7 +76,7 @@
             this.musteriDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.musteriDataGridView.Location = new System.Drawing.Point(366, 21);
             this.musteriDataGridView.Name = "musteriDataGridView";
-            this.musteriDataGridView.Size = new System.Drawing.Size(258, 501);
+            this.musteriDataGridView.Size = new System.Drawing.Size(260, 501);
             this.musteriDataGridView.TabIndex = 2;
             // 
             // masalarDataGridView
@@ -117,17 +117,17 @@
             // asciDataGridView
             // 
             this.asciDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.asciDataGridView.Location = new System.Drawing.Point(630, 21);
+            this.asciDataGridView.Location = new System.Drawing.Point(632, 21);
             this.asciDataGridView.Name = "asciDataGridView";
-            this.asciDataGridView.Size = new System.Drawing.Size(350, 501);
+            this.asciDataGridView.Size = new System.Drawing.Size(358, 501);
             this.asciDataGridView.TabIndex = 7;
             // 
             // kasaDataGridView
             // 
             this.kasaDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.kasaDataGridView.Location = new System.Drawing.Point(986, 21);
+            this.kasaDataGridView.Location = new System.Drawing.Point(996, 21);
             this.kasaDataGridView.Name = "kasaDataGridView";
-            this.kasaDataGridView.Size = new System.Drawing.Size(245, 501);
+            this.kasaDataGridView.Size = new System.Drawing.Size(249, 501);
             this.kasaDataGridView.TabIndex = 8;
             // 
             // musteriSayisiTextBox
@@ -264,7 +264,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(627, 5);
+            this.label7.Location = new System.Drawing.Point(629, 5);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(44, 13);
             this.label7.TabIndex = 24;
@@ -273,7 +273,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(983, 5);
+            this.label8.Location = new System.Drawing.Point(993, 5);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(37, 13);
             this.label8.TabIndex = 25;
@@ -282,18 +282,18 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(220, 468);
+            this.label9.Location = new System.Drawing.Point(277, 469);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(133, 26);
+            this.label9.Size = new System.Drawing.Size(83, 52);
             this.label9.TabIndex = 26;
-            this.label9.Text = "Lütfen max 100 kişi olacak\r\n! ! ! şekilde giriş yapınız ! ! !";
+            this.label9.Text = "Lütfen max 100 \r\nkişi , min 5 kişi\r\nolacak şekilde\r\ngiriş yapınız";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1240, 530);
+            this.ClientSize = new System.Drawing.Size(1260, 530);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
